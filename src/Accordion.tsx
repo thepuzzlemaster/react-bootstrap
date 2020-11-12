@@ -1,10 +1,10 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
 import { useBootstrapPrefix } from './ThemeProvider';
+import createWithBsPrefix from './createWithBsPrefix';
 import AccordionToggle from './AccordionToggle';
-import SelectableContext from './SelectableContext';
 import AccordionCollapse from './AccordionCollapse';
 import AccordionContext from './AccordionContext';
 import {
@@ -13,17 +13,27 @@ import {
   SelectCallback,
 } from './helpers';
 
+const AccordionItem = createWithBsPrefix('accordion-item');
+const AccordionHeader = createWithBsPrefix('accordion-header', {
+  Component: 'h2',
+});
+const AccordionBody = createWithBsPrefix('accordion-body');
+
 export interface AccordionProps
   extends Omit<React.HTMLAttributes<HTMLElement>, 'onSelect'>,
     BsPrefixPropsWithChildren {
   activeKey?: string;
   defaultActiveKey?: string;
   onSelect?: SelectCallback;
+  flush?: boolean;
 }
 
 type Accordion = BsPrefixRefForwardingComponent<'div', AccordionProps> & {
   Toggle: typeof AccordionToggle;
   Collapse: typeof AccordionCollapse;
+  Item: typeof AccordionItem;
+  Header: typeof AccordionHeader;
+  Body: typeof AccordionBody;
 };
 
 const propTypes = {
@@ -38,6 +48,11 @@ const propTypes = {
 
   /** The default active key that is expanded on start */
   defaultActiveKey: PropTypes.string,
+
+  /**
+   * Renders accordion edge-to-edge with its parent container
+   */
+  flush: PropTypes.bool,
 };
 
 const Accordion = (React.forwardRef((props: AccordionProps, ref) => {
@@ -49,22 +64,30 @@ const Accordion = (React.forwardRef((props: AccordionProps, ref) => {
     children,
     className,
     onSelect,
+    flush,
     ...controlledProps
   } = useUncontrolled(props, {
     activeKey: 'onSelect',
   });
 
-  const finalClassName = classNames(
-    className,
-    useBootstrapPrefix(bsPrefix, 'accordion'),
+  const prefix = useBootstrapPrefix(bsPrefix, 'accordion');
+  const contextValue = useMemo(
+    () => ({
+      activeEventKey: activeKey || null,
+      onSelect: onSelect || null,
+    }),
+    [activeKey, onSelect],
   );
+
   return (
-    <AccordionContext.Provider value={activeKey || null}>
-      <SelectableContext.Provider value={onSelect || null}>
-        <Component ref={ref} {...controlledProps} className={finalClassName}>
-          {children}
-        </Component>
-      </SelectableContext.Provider>
+    <AccordionContext.Provider value={contextValue}>
+      <Component
+        ref={ref}
+        {...controlledProps}
+        className={classNames(className, prefix, flush && `${prefix}-flush`)}
+      >
+        {children}
+      </Component>
     </AccordionContext.Provider>
   );
 }) as unknown) as Accordion;
@@ -73,5 +96,8 @@ Accordion.displayName = 'Accordion';
 Accordion.propTypes = propTypes;
 Accordion.Toggle = AccordionToggle;
 Accordion.Collapse = AccordionCollapse;
+Accordion.Item = AccordionItem;
+Accordion.Header = AccordionHeader;
+Accordion.Body = AccordionBody;
 
 export default Accordion;

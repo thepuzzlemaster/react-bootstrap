@@ -1,4 +1,4 @@
-<Accordion>
+<Accordion defaultActiveKey="0" flush>
   <Accordion.Item>
     <Accordion.Header>
       <Accordion.Toggle eventKey="0">Accordion Item #1</Accordion.Toggle>

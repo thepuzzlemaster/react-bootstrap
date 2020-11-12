@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import Accordion from '../src/Accordion';
-import Card from '../src/Card';
 import Dropdown from '../src/Dropdown';
 import ListGroup from '../src/ListGroup';
 import Nav from '../src/Nav';
@@ -12,25 +11,25 @@ describe('<Accordion>', () => {
     mount(<Accordion />).assertSingle('div');
   });
 
-  it('should only have second card collapsed', () => {
+  it('should only have second item collapsed', () => {
     const wrapper = mount(
       <Accordion defaultActiveKey="0">
-        <Card>
-          <Card.Header>
+        <Accordion.Item>
+          <Accordion.Header>
             <Accordion.Toggle eventKey="0" />
-          </Card.Header>
+          </Accordion.Header>
           <Accordion.Collapse eventKey="0">
-            <Card.Body>body text</Card.Body>
+            <Accordion.Body>body text</Accordion.Body>
           </Accordion.Collapse>
-        </Card>
-        <Card>
-          <Card.Header>
+        </Accordion.Item>
+        <Accordion.Item>
+          <Accordion.Header>
             <Accordion.Toggle eventKey="1" />
-          </Card.Header>
+          </Accordion.Header>
           <Accordion.Collapse eventKey="1">
-            <Card.Body>body text</Card.Body>
+            <Accordion.Body>body text</Accordion.Body>
           </Accordion.Collapse>
-        </Card>
+        </Accordion.Item>
       </Accordion>,
     );
     const collapses = wrapper.find('AccordionCollapse');
@@ -39,29 +38,29 @@ describe('<Accordion>', () => {
     collapses.at(1).getDOMNode().className.should.include('collapse');
   });
 
-  it('should expand next card and collapse current card on click', () => {
+  it('should expand next item and collapse current item on click', () => {
     const onClickSpy = sinon.spy();
     const wrapper = mount(
       <Accordion>
-        <Card>
-          <Card.Header>
+        <Accordion.Item>
+          <Accordion.Header>
             <Accordion.Toggle onClick={onClickSpy} eventKey="0" />
-          </Card.Header>
+          </Accordion.Header>
           <Accordion.Collapse eventKey="0">
-            <Card.Body>body text</Card.Body>
+            <Accordion.Body>body text</Accordion.Body>
           </Accordion.Collapse>
-        </Card>
-        <Card>
-          <Card.Header>
+        </Accordion.Item>
+        <Accordion.Item>
+          <Accordion.Header>
             <Accordion.Toggle onClick={onClickSpy} eventKey="1" />
-          </Card.Header>
+          </Accordion.Header>
           <Accordion.Collapse eventKey="1">
-            <Card.Body>body text</Card.Body>
+            <Accordion.Body>body text</Accordion.Body>
           </Accordion.Collapse>
-        </Card>
+        </Accordion.Item>
       </Accordion>,
     );
-    wrapper.find('CardHeader').at(1).find('button').simulate('click');
+    wrapper.find('AccordionHeader').at(1).find('button').simulate('click');
 
     onClickSpy.should.be.calledOnce;
 
@@ -81,12 +80,12 @@ describe('<Accordion>', () => {
   it('Should not close accordion when child dropdown clicked', () => {
     const wrapper = mount(
       <Accordion defaultActiveKey="0">
-        <Card>
-          <Card.Header>
+        <Accordion.Item>
+          <Accordion.Header>
             <Accordion.Toggle eventKey="0" />
-          </Card.Header>
+          </Accordion.Header>
           <Accordion.Collapse eventKey="0">
-            <Card.Body>
+            <Accordion.Body>
               <Dropdown show>
                 <Dropdown.Toggle id="dropdown-test">
                   Dropdown Button
@@ -95,9 +94,9 @@ describe('<Accordion>', () => {
                   <Dropdown.Item href="#">Action</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-            </Card.Body>
+            </Accordion.Body>
           </Accordion.Collapse>
-        </Card>
+        </Accordion.Item>
       </Accordion>,
     );
 
@@ -113,20 +112,20 @@ describe('<Accordion>', () => {
   it('Should not close accordion when child ListGroup clicked', () => {
     const wrapper = mount(
       <Accordion defaultActiveKey="0">
-        <Card>
-          <Card.Header>
+        <Accordion.Item>
+          <Accordion.Header>
             <Accordion.Toggle eventKey="0" />
-          </Card.Header>
+          </Accordion.Header>
           <Accordion.Collapse eventKey="0">
-            <div>
+            <Accordion.Body>
               <ListGroup defaultActiveKey="#link1">
                 <ListGroup.Item action href="#link1">
                   Link 1
                 </ListGroup.Item>
               </ListGroup>
-            </div>
+            </Accordion.Body>
           </Accordion.Collapse>
-        </Card>
+        </Accordion.Item>
       </Accordion>,
     );
 
@@ -142,10 +141,10 @@ describe('<Accordion>', () => {
   it('Should not close accordion when child Nav clicked', () => {
     const wrapper = mount(
       <Accordion defaultActiveKey="0">
-        <Card>
-          <Card.Header>
+        <Accordion.Item>
+          <Accordion.Header>
             <Accordion.Toggle eventKey="0" />
-          </Card.Header>
+          </Accordion.Header>
           <Accordion.Collapse eventKey="0">
             <Nav activeKey="/home">
               <Nav.Item>
@@ -153,7 +152,7 @@ describe('<Accordion>', () => {
               </Nav.Item>
             </Nav>
           </Accordion.Collapse>
-        </Card>
+        </Accordion.Item>
       </Accordion>,
     );
 
