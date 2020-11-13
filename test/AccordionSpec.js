@@ -11,6 +11,10 @@ describe('<Accordion>', () => {
     mount(<Accordion />).assertSingle('div');
   });
 
+  it('should render flush prop', () => {
+    mount(<Accordion flush />).assertSingle('.accordion.accordion-flush');
+  });
+
   it('should only have second item collapsed', () => {
     const wrapper = mount(
       <Accordion defaultActiveKey="0">
@@ -74,6 +78,45 @@ describe('<Accordion>', () => {
     // (which is possible in `@testing-library` via `waitForElement`).
     // https://testing-library.com/docs/dom-testing-library/api-async#waitforelement
     collapses.at(1).getDOMNode().className.should.include('collapsing');
+  });
+
+  it('should collapse current item on click', () => {
+    const onClickSpy = sinon.spy();
+    const wrapper = mount(
+      <Accordion defaultActiveKey="0">
+        <Accordion.Item>
+          <Accordion.Header>
+            <Accordion.Toggle onClick={onClickSpy} eventKey="0" />
+          </Accordion.Header>
+          <Accordion.Collapse eventKey="0">
+            <Accordion.Body>body text</Accordion.Body>
+          </Accordion.Collapse>
+        </Accordion.Item>
+        <Accordion.Item>
+          <Accordion.Header>
+            <Accordion.Toggle onClick={onClickSpy} eventKey="1" />
+          </Accordion.Header>
+          <Accordion.Collapse eventKey="1">
+            <Accordion.Body>body text</Accordion.Body>
+          </Accordion.Collapse>
+        </Accordion.Item>
+      </Accordion>,
+    );
+    wrapper.find('AccordionHeader').at(0).find('button').simulate('click');
+
+    onClickSpy.should.be.calledOnce;
+
+    const collapses = wrapper.find('AccordionCollapse');
+
+    collapses.at(0).getDOMNode().className.should.include('collapse');
+    collapses.at(1).getDOMNode().className.should.include('collapse');
+
+    // Enzyme doesn't really provide support for async utilities
+    // on components, but in an ideal setup we should be testing for
+    // this className to be `show` after the collapsing animation is done
+    // (which is possible in `@testing-library` via `waitForElement`).
+    // https://testing-library.com/docs/dom-testing-library/api-async#waitforelement
+    collapses.at(0).getDOMNode().className.should.include('collapsing');
   });
 
   // https://github.com/react-bootstrap/react-bootstrap/issues/4176

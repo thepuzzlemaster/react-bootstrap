@@ -73,8 +73,8 @@ const Accordion = (React.forwardRef((props: AccordionProps, ref) => {
   const prefix = useBootstrapPrefix(bsPrefix, 'accordion');
   const contextValue = useMemo(
     () => ({
-      activeEventKey: activeKey || null,
-      onSelect: onSelect || null,
+      activeEventKey: activeKey,
+      onSelect,
     }),
     [activeKey, onSelect],
   );
