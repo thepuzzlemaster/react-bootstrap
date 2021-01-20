@@ -212,7 +212,7 @@ const FormCheck: FormCheck = (React.forwardRef(
               {hasLabel && (
                 <FormCheckLabel title={title}>{label}</FormCheckLabel>
               )}
-              {(isValid || isInvalid) && (
+              {(isValid || isInvalid) && feedback && (
                 <Feedback
                   type={isValid ? 'valid' : 'invalid'}
                   tooltip={feedbackTooltip}
